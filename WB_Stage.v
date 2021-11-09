@@ -1,11 +1,15 @@
 module WB_Stage (
-    input clk, rst,
-    input[31:0] PC_in,
-    output[31:0] PC
+    input clk, rst, MEM_R_EN,
+    input[31:0] ALU_res, mem_out,
+
+    output[31:0] WB_value
 );
-    
-    always @(posedge clk, posedge rst) begin
-        
-    end
+
+    mux mux(
+        .a(ALU_res),
+        .b(mem_out),
+        .s(MEM_R_EN),
+        .c(WB_value)
+    );
 
 endmodule
