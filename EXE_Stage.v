@@ -28,10 +28,10 @@ module EXE_Stage (
     ALU alu(
         .val1(Val_Rn),
         .val2(Val2),
-        .Cin(status_IN[1]),
+        .C_in(status_IN[1]),
         .command(EXE_CMD),
         .out(ALU_res),
-        .Cout(status[1]),
+        .C_out(status[1]),
         .V(status[0]),
         .Z(status[2]),
         .N(status[3])

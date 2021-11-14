@@ -48,8 +48,8 @@ module ARM (
         .clk(clk), 
         .rst(rst),
         .freeze(1'b0),
-        .branchTaken(1'b0),
-        .branchAddr(0),
+        .branchTaken(branchTaken),
+        .branchAddr(branchAddr),
         .PC(PC_IF),
         .instruction(inst_IF)
     );
@@ -73,7 +73,7 @@ module ARM (
         .writeBackEn(WB_EN_WB),
         .Dest_wb(Dest_WB),
         .hazard(1'b0),
-        .SR(4'b0),
+        .SR(status_ID),
 
         .WB_EN(wb_en_ID), 
         .MEM_R_EN(mem_r_en_ID), 
@@ -110,7 +110,7 @@ module ARM (
         .shift_operand_IN(shift_operand_ID),
         .Signed_imm_24_IN(signed_imm_24_ID),
         .Dest_IN(dest_ID),
-        .status_IN(4'b0),
+        .status_IN(status_ID),
 
         .WB_EN(wb_en_EXE), 
         .MEM_R_EN(mem_r_en_EXE), 

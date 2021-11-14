@@ -5,7 +5,7 @@ module WB_Stage (
     output[31:0] WB_value
 );
 
-    mux mux(
+    Mux mux(
         .a(ALU_res),
         .b(mem_out),
         .s(MEM_R_EN),
