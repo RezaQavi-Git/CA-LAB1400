@@ -3,7 +3,7 @@ module Ins_Mem (
     output[31:0] out
 );
 
-    reg[31:0] mem[0:20];
+    reg[31:0] mem[0:1024];
 
     initial begin
         $readmemb ("instructions.txt", mem);

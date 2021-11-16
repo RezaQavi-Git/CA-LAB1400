@@ -47,7 +47,7 @@ module ARM (
     IF_Stage if_stage(
         .clk(clk), 
         .rst(rst),
-        .freeze(1'b0),
+        .freeze(hazard),
         .branchTaken(branchTaken),
         .branchAddr(branchAddr),
         .PC(PC_IF),
@@ -57,8 +57,8 @@ module ARM (
     IF_Reg if_reg(
         .clk(clk), 
         .rst(rst),
-        .freeze(1'b0),
-        .flush(1'b0),
+        .freeze(hazard),
+        .flush(branchTaken),
         .PC_in(PC_IF),
         .instruction_in(inst_IF),
         .PC(PC_ID),
@@ -72,7 +72,7 @@ module ARM (
         .Result_WB(WB_value),
         .writeBackEn(WB_EN_WB),
         .Dest_wb(Dest_WB),
-        .hazard(1'b0),
+        .hazard(hazard),
         .SR(status_ID),
 
         .WB_EN(wb_en_ID), 
@@ -127,6 +127,20 @@ module ARM (
         .Dest(dest_EXE),
         .status(status_EXE_in)
     );
+
+
+    Hazard_Unit hazard_unit(
+        .src1(src1_ID),
+        .src2(src2_ID),
+        .Exe_Dest(dest_EXE),
+        .Exe_WB_EN(wb_en_EXE),
+        .Mem_Dest(Dest_MEM),
+        .Mem_WB_EN(wb_en_MEM),
+        .Two_src(Two_src),
+        .use_src1(use_src1),
+        .hazard_Detected(hazard)
+    );
+
 
 
     EXE_Stage exe_stage(

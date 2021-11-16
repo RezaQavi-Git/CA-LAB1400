@@ -4,9 +4,15 @@ module MEM_Stage (
     output[31:0] mem_out
 );
 
-    
-    always @(posedge clk, posedge rst) begin
+    Data_Mem data_mem(
+        .clk(clk),
+        .rst(rst),
+        .MEM_W_EN(MEM_W_EN),
+        .MEM_R_EN(MEM_R_EN),
+        .address(ALU_res),
+        .data(ST_val),
         
-    end
+        .out(mem_out)
+    );
 
 endmodule
