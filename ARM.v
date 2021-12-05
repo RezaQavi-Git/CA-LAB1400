@@ -1,9 +1,11 @@
 module ARM (
-    input clk, rst
+    input clk, rst, forward_enable
 );
 
     wire branchTaken;
     wire[31:0] branchAddr;
+
+    wire[1:0] sel_src1, sel_src2;
 
 // IF Stage
     wire[31:0] PC_IF, inst_IF;
@@ -17,9 +19,9 @@ module ARM (
     wire Two_src;
 
 // EXE Stage
-    wire wb_en_EXE, mem_r_en_EXE, mem_w_en_EXE, s_EXE, imm_EXE; 
-    wire[3:0] exe_cmd_EXE, dest_EXE;
-    wire[31:0] val_rn_EXE, val_rm_EXE, ALU_res_EXE, PC_EXE;
+    wire wb_en_EXE, mem_r_en_EXE, mem_w_en_EXE, s_EXE, imm_EXE, use_src1_EXE, use_src2_EXE;  
+    wire[3:0] exe_cmd_EXE, dest_EXE, src1_EXE, src2_EXE;
+    wire[31:0] val_rn_EXE, val_rm_EXE, ALU_res_EXE, PC_EXE, ST_val_EXE;
     wire[11:0] shift_operand_EXE;
     wire[23:0] signed_imm_24_EXE;
 
@@ -111,6 +113,11 @@ module ARM (
         .Signed_imm_24_IN(signed_imm_24_ID),
         .Dest_IN(dest_ID),
         .status_IN(status_ID),
+        .src1_IN(src1_ID),
+        .src2_IN(src2_ID),
+        .use_src1_IN(use_src1),
+        .use_src2_IN(Two_src),
+
 
         .WB_EN(wb_en_EXE), 
         .MEM_R_EN(mem_r_en_EXE), 
@@ -125,17 +132,24 @@ module ARM (
         .Shift_operand(shift_operand_EXE),
         .Signed_imm_24(signed_imm_24_EXE),
         .Dest(dest_EXE),
-        .status(status_EXE_in)
+        .status(status_EXE_in),
+        .src1(src1_EXE),
+        .src2(src2_EXE),
+        .use_src1(use_src1_EXE),
+        .use_src2(use_src2_EXE)
+
     );
 
 
     Hazard_Unit hazard_unit(
+        .forward_enable(forward_enable),
         .src1(src1_ID),
         .src2(src2_ID),
         .Exe_Dest(dest_EXE),
         .Exe_WB_EN(wb_en_EXE),
         .Mem_Dest(Dest_MEM),
         .Mem_WB_EN(wb_en_MEM),
+        .MEM_R_EN_EXE(mem_r_en_EXE),
         .Two_src(Two_src),
         .use_src1(use_src1),
         .hazard_Detected(hazard)
@@ -156,10 +170,16 @@ module ARM (
         .Shift_operand(shift_operand_EXE),
         .Signed_imm_24(signed_imm_24_EXE),
         .status_IN(status_EXE_in),
+        .sel_src1(sel_src1),
+        .sel_src2(sel_src2),
+        .ALU_res_MEM(ALU_res_MEM),
+        .WB_val(WB_value),
+
 
         .ALU_res(ALU_res_EXE),
         .Br_addr(branchAddr),
-        .status(status_EXE_out)
+        .status(status_EXE_out),
+        .ST_val(ST_val_EXE)
 
     );
 
@@ -170,7 +190,7 @@ module ARM (
         .MEM_R_EN_in(mem_r_en_EXE),
         .MEM_W_EN_in(mem_w_en_EXE),
         .ALU_res_in(ALU_res_EXE),
-        .ST_val_in(val_rm_EXE),
+        .ST_val_in(ST_val_EXE),
         .Dest_in(dest_EXE),
 
         .WB_en(wb_en_MEM),
@@ -181,6 +201,24 @@ module ARM (
         .Dest(Dest_MEM)
 
     );
+
+
+forwarding_unit forwarding_unit(
+        .forward_enable(forward_enable),
+        .src1(src1_EXE),
+        .src2(src2_EXE),
+        .Dest_MEM(Dest_MEM),
+        .wb_en_MEM(wb_en_MEM),
+        .Dest_WB(Dest_WB),
+        .wb_en_WB(WB_EN_WB),
+        .use_src1(use_src1_EXE),
+        .use_src2(use_src2_EXE),
+        
+
+        .sel_src1(sel_src1),
+        .sel_src2(sel_src2)
+    );
+
 
     MEM_Stage mem_stage(
         .clk(clk),

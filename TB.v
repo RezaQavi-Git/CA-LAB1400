@@ -1,13 +1,16 @@
 module TB();
 
-    reg clk, rst;
+    reg clk, rst, forward_enable;
 
     ARM arm(
         .clk(clk),
-        .rst(rst)
+        .rst(rst),
+        .forward_enable(forward_enable)
+
     );
 
     initial begin
+        forward_enable = 1;
         rst = 0;
         #40;
         rst = 1;
