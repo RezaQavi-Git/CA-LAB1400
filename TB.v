@@ -1,31 +1,41 @@
+`timescale 1ns/1ns
 module TB();
 
-    reg clk, rst, forward_enable;
+    reg clk, rst, forward_enable, CLK;
 
-    ARM arm(
-        .clk(clk),
-        .rst(rst),
+    Total_System total_system (
+        .clk(clk), 
+        .CLK(CLK), 
+        .rst(rst), 
         .forward_enable(forward_enable)
-
     );
 
     initial begin
         forward_enable = 1;
         rst = 0;
-        #40;
+        #20;
         rst = 1;
-        #40
+        #60
         rst = 0;
     end
 
     initial begin
-        clk = 1;
-        repeat(1000) begin
-            #50;
-            clk = ~clk;
+        #5;
+        CLK = 1;
+        repeat(700) begin
+            #40;
+            CLK = ~CLK;
         end
     end
 
+
+    initial begin
+        clk = 1;
+        repeat(1400) begin
+            #20;
+            clk = ~clk;
+        end
+    end
 
 endmodule
 

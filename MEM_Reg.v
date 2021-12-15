@@ -1,10 +1,10 @@
 module MEM_Reg (
-    input clk, rst, WB_EN_MEM, MEM_R_EN_MEM,
-    input[31:0] ALU_res_MEM, mem_out_MEM,
+    input clk, rst, freeze, WB_EN_MEM, MEM_R_EN_MEM,
+    input[31:0] ALU_res_MEM, mem_out_MEM, PC_in,
     input[3:0] Dest_MEM, 
 
     output reg WB_EN_WB, MEM_R_EN_WB, 
-    output reg[31:0] ALU_res_WB, mem_out_WB,
+    output reg[31:0] ALU_res_WB, mem_out_WB, PC,
     output reg[3:0] Dest_WB
 );
 
@@ -15,12 +15,14 @@ module MEM_Reg (
             ALU_res_WB <= 32'b0;
             mem_out_WB <= 32'b0;
             Dest_WB <= 4'b0;
-        end else begin
+            PC <= 32'b0;
+        end else if(~freeze)begin
             WB_EN_WB <= WB_EN_MEM;
             MEM_R_EN_WB <= MEM_R_EN_MEM;
             ALU_res_WB <= ALU_res_MEM;
             mem_out_WB <= mem_out_MEM;
             Dest_WB <= Dest_MEM;
+            PC <= PC_in;
         end
     end
 
