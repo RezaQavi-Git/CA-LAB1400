@@ -2,7 +2,7 @@ module Total_System (
     input clk, CLK, rst, forward_enable
 );
 
-    wire [31:0] SRAM_DQ;
+    wire [63:0] SRAM_DQ;
     wire [16:0] SRAM_ADDR;
     wire SRAM_WE_N;
 

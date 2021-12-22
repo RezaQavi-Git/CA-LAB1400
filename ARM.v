@@ -1,11 +1,11 @@
 module ARM (
     input clk, rst, forward_enable,
-    input [31:0] SRAM_DQ,
+    input [63:0] SRAM_DQ,
     output [16:0] SRAM_ADDR,
     output SRAM_WE_N
 );
 
-   wire branchTaken, hazard, IF_freeze, ID_freeze, EXE_freeze, freeze, MEM_freeze;
+    wire branchTaken, hazard, IF_freeze, ID_freeze, EXE_freeze, freeze, MEM_freeze;
     wire[31:0] branchAddr;
 
     wire[1:0] sel_src1, sel_src2;
